@@ -205,12 +205,25 @@ public class ListSEController {
                     200, kidsByLocationDTOList1,
                     null), HttpStatus.OK);
         }
+    @GetMapping(path = "/kidsbylocations")
+    public ResponseEntity<ResponseDTO> getKidsByLocation(){
+        List<KidsByLocationDTO> kidsByLocationDTOList = new ArrayList<>();
+        for(Location loc: locationService.getLocations()){
+            int count = listSEService.getKids().getCountKidsByLocationCode(loc.getCode());
+            if(count>0){
+                kidsByLocationDTOList.add(new KidsByLocationDTO(loc,count));
+            }
+        }
+        return new ResponseEntity<>(new ResponseDTO(
+                200,kidsByLocationDTOList,
+                null), HttpStatus.OK);
+}
 
 
 
 
 
-    @GetMapping(path = "/kidsbylocation/{limitador}")
+    @GetMapping(path = "/kidsbycityandgender/{limitador}")
     public ResponseEntity<ResponseDTO> getKidsByLocationAndGender(@PathVariable byte limitador) {
         List<KidsByLocationAndGenderDTO> kidsByLocationAndGenderDTOList = new ArrayList<>();
 
