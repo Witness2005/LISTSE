@@ -1,6 +1,7 @@
-package co.edu.umanizales.tads.model;
+package co.edu.umanizales.tads.model.listaSE;
 
-import ch.qos.logback.core.joran.spi.ElementSelector;
+import co.edu.umanizales.tads.model.Gender;
+import co.edu.umanizales.tads.model.Kid;
 import lombok.Data;
 
 @Data

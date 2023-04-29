@@ -1,5 +1,6 @@
-package co.edu.umanizales.tads.model;
+package co.edu.umanizales.tads.model.listaSE;
 
+import co.edu.umanizales.tads.model.Kid;
 import lombok.Data;
 
 @Data
