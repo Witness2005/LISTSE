@@ -251,5 +251,23 @@ public class ListSEController {
         ResponseDTO responseDTO = new ResponseDTO(200, kidsByLocationAndGenderDTOList, null);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
+    @GetMapping(path = "/delete/{age1}")
+    public ResponseEntity<ResponseDTO> getTotalSalesByStore(@PathVariable byte age1) {
+        listSEService.getKids().deleteByAge(age1);
+        return new ResponseEntity<>(new ResponseDTO(200,
+                "Borrado satisfactoriamente", null), HttpStatus.OK);
+    }
+
+
+    @GetMapping(path="/averageage")
+    public ResponseEntity<ResponseDTO> averageAge(){
+
+        listSEService.getKids().averageAge();
+        return new ResponseEntity<>(new ResponseDTO(
+                200,listSEService.getKids().averageAge(),
+                null), HttpStatus.OK);
+    }
+
 
 }
+

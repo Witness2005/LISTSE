@@ -10,6 +10,6 @@ public class Pet
     private String identification;
     private String name;
     private byte age;
-    private Gender gender;
+    private Gender sex;
     private Location location;
 }

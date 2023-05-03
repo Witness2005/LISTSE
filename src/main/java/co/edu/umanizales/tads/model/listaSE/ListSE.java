@@ -66,7 +66,7 @@ public class ListSE {
             ListSE listCp = new ListSE();
             Node temp = this.head;
             while (temp != null) {
-                if (temp.getData().getGender().equals('M')) {
+                if (temp.getData().getGender().equals(Gender.M)) {
                     listCp.addToStart(temp.getData());
                 } else {
                     listCp.add(temp.getData());
@@ -307,6 +307,41 @@ basicamente hace lo mismo que el sentbottom solo que este se aprovecha de los me
         }
         return count;
     }
+     public void deleteByAge(byte age) {
+        ListSE deleterList = new ListSE();
+        Node temp = this.head;
+
+        while (temp != null) {
+            if (temp.getData().getAge() != (age)) {
+                deleterList.add(temp.getData());
+            }
+            temp = temp.getNext();
+        }
+
+        this.head = deleterList.getHead();
+
+     }
+    public float averageAge(){
+        if (head != null){
+            Node temp = head;
+            int counter = 0;
+            int summatory = 0;
+            while(temp != null) {
+                counter++;
+                summatory = summatory + temp.getData().getAge();
+                temp = temp.getNext();
+            }
+            float average = 0;
+            if (counter > 0) {
+                average = summatory / (float)counter;
+            }
+            return average;
+        } else {
+            return 0;
+        }
+    }
+
+
 
 
 }
