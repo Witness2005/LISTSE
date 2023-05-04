@@ -5,8 +5,10 @@ import co.edu.umanizales.tads.controller.dto.*;
 import co.edu.umanizales.tads.model.Gender;
 import co.edu.umanizales.tads.model.Kid;
 import co.edu.umanizales.tads.model.Location;
+import co.edu.umanizales.tads.model.Rango;
 import co.edu.umanizales.tads.service.ListSEService;
 import co.edu.umanizales.tads.service.LocationService;
+import co.edu.umanizales.tads.service.RangeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,9 @@ public class ListSEController {
     private ListSEService listSEService;
     @Autowired
     private LocationService locationService;
+
+    @Autowired
+    private RangeService rangesService;
 
     @GetMapping
     public ResponseEntity<ResponseDTO> getKids() {
@@ -267,6 +272,39 @@ public class ListSEController {
                 200,listSEService.getKids().averageAge(),
                 null), HttpStatus.OK);
     }
+
+
+    @GetMapping(path="/intercalatebygender")
+    public ResponseEntity<ResponseDTO> intercalatebygender(){
+
+        listSEService.getKids().intercalateByGender();
+        return new ResponseEntity<>(new ResponseDTO(
+                200,"Se intercalo la lista por genero",
+                null), HttpStatus.OK);
+    }
+
+
+
+    @GetMapping(path = "/rangeagepets")
+    public ResponseEntity<ResponseDTO> getRangeByPets() {
+        List<RangeAgeDTO> kidsRangeDTOList = new ArrayList<>();
+
+        for (Rango rango : rangesService.getRanges()) {
+            int quantity = listSEService.getKids().getRangeByPets(rango.getFrom(), rango.getTo());
+            kidsRangeDTOList.add(new RangeAgeDTO(rango, quantity));
+
+
+        }
+        return new ResponseEntity<>(new ResponseDTO(200, kidsRangeDTOList, null),
+                HttpStatus.OK);
+
+
+    }
+
+
+
+
+
 
 
 }

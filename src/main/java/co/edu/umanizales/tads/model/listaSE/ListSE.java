@@ -341,7 +341,54 @@ basicamente hace lo mismo que el sentbottom solo que este se aprovecha de los me
         }
     }
 
+    public void intercalateByGender(){
+        ListSE tempMales = new ListSE();
+        ListSE tempFemales = new ListSE();
+        Node temp = head;
+        while (temp != null){
+            if(temp.getData().getGender().equals(Gender.M)){
+                tempMales.addToEnd(temp.getData());
+            }
+            if(temp.getData().getGender().equals(Gender.F)){
+                tempFemales.addToEnd(temp.getData());
+            }
+            temp = temp.getNext();
+        }
+
+        ListSE intercalateList = new ListSE();
+        Node maleNode = tempMales.getHead();
+        Node femaleNode = tempFemales.getHead();
+        while (maleNode != null || femaleNode != null){
+            if (maleNode != null){
+                intercalateList.addToEnd(maleNode.getData());
+                maleNode = maleNode.getNext();
+            }
+            if (femaleNode != null){
+                intercalateList.addToEnd(femaleNode.getData());
+                femaleNode = femaleNode.getNext();
+            }
+        }
+        head = intercalateList.getHead();
+    }
+
+    public int getRangeByPets (int min, int max) {
+        Node temp = head;
+        int counter = 0;
+        while (temp !=  null) {
+            if (temp.getData().getAge() >= min && temp.getData().getAge() <= max) {
+                counter++;
+            }
+            temp= temp.getNext();
+        }
+
+        return counter;
+    }
+
+    }
 
 
 
-}
+
+
+
+

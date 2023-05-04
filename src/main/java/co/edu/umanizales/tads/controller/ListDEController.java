@@ -2,13 +2,12 @@ package co.edu.umanizales.tads.controller;
 
 import co.edu.umanizales.tads.controller.dto.*;
 
-import co.edu.umanizales.tads.model.Kid;
-import co.edu.umanizales.tads.model.Gender;
-import co.edu.umanizales.tads.model.Location;
+import co.edu.umanizales.tads.model.*;
 import co.edu.umanizales.tads.controller.dto.ResponseDTO;
-import co.edu.umanizales.tads.model.Pet;
 import co.edu.umanizales.tads.service.ListDEService;
 import co.edu.umanizales.tads.service.LocationService;
+import co.edu.umanizales.tads.model.Rango;
+import co.edu.umanizales.tads.service.RangeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,13 +24,14 @@ public class ListDEController {
     @Autowired
     private LocationService locationService;
 
+    @Autowired
+    private RangeService rangesService;
+
     @GetMapping
     public ResponseEntity<ResponseDTO> getPets() {
         return new ResponseEntity<>(new ResponseDTO(
                 200, listDEService.getPets().getHead(), null), HttpStatus.OK);
     }
-
-
 
 
     @PostMapping
@@ -64,15 +64,13 @@ public class ListDEController {
     @GetMapping(path = "/invert")
     public ResponseEntity<ResponseDTO> invertList() {
 
-            listDEService.getPets().invert();
-            return new ResponseEntity<>(
-                    new ResponseDTO(200, "Lista Invertida Satisfactoriamente", null),
-                    HttpStatus.OK);
-
+        listDEService.getPets().invert();
+        return new ResponseEntity<>(
+                new ResponseDTO(200, "Lista Invertida Satisfactoriamente", null),
+                HttpStatus.OK);
 
 
     }
-
 
 
     @GetMapping(path = "/maletostart")
@@ -84,17 +82,15 @@ public class ListDEController {
                 HttpStatus.OK);
 
 
-
     }
 
 
+    @GetMapping(path = "/intercalatebysex")
+    public ResponseEntity<ResponseDTO> intercalatebysex() {
 
-    @GetMapping(path="/intercalatebygender")
-    public ResponseEntity<ResponseDTO> intercalatebygender(){
-
-        listDEService.getPets().intercalateMaleAndFemale();
+        listDEService.getPets().intercalateBySex();
         return new ResponseEntity<>(new ResponseDTO(
-                200,"Se intercalo la lista por genero",
+                200, "Se intercalo la lista por genero",
                 null), HttpStatus.OK);
     }
 
@@ -107,12 +103,12 @@ public class ListDEController {
     }
 
 
-    @GetMapping(path="/averageage")
-    public ResponseEntity<ResponseDTO> averageAge(){
+    @GetMapping(path = "/averageage")
+    public ResponseEntity<ResponseDTO> averageAge() {
 
         listDEService.getPets().averageAge();
         return new ResponseEntity<>(new ResponseDTO(
-                200,listDEService.getPets().averageAge(),
+                200, listDEService.getPets().averageAge(),
                 null), HttpStatus.OK);
     }
 
@@ -130,6 +126,60 @@ public class ListDEController {
                 200, kidsByLocationDTOList1,
                 null), HttpStatus.OK);
     }
+
+
+    @GetMapping(path = "/sendbottom/{firstChar}")
+    public ResponseEntity<ResponseDTO> sendbottom(@PathVariable char firstChar) {
+
+
+        if (listDEService.getPets().checkerByChar(Character.toUpperCase(firstChar)) == 0) {
+            return new ResponseEntity<>(
+                    new ResponseDTO(404, "no hay ninguno que empiece por esa letra", null),
+                    HttpStatus.OK);
+        } else {
+            listDEService.getPets().sendBottom(Character.toUpperCase(firstChar));
+            return new ResponseEntity<>(
+                    new ResponseDTO(200, "Cambio Realizado", null),
+                    HttpStatus.OK);
+
+
+        }
+
+
+    }
+
+    @GetMapping(path = "/advanceposition/{code}/{move}")
+    public ResponseEntity<ResponseDTO> advancePosition(@PathVariable String code, @PathVariable int move) {
+        listDEService.getPets().advancePosition(code, move);
+        return new ResponseEntity<>(
+                new ResponseDTO(200, "Se movio la mascota ", null),
+                HttpStatus.OK);
+    }
+    @GetMapping(path = "/lose/{code}/{move}")
+    public ResponseEntity<ResponseDTO> losePosition(@PathVariable String code, @PathVariable int move) {
+        listDEService.getPets().losePosition(code, move);
+        return new ResponseEntity<>(
+                new ResponseDTO(200, "Se retrocedio la mascota " , null),
+                HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/rangeagepets")
+    public ResponseEntity<ResponseDTO> getRangeByPets() {
+        List<RangeAgeDTO> kidsRangeDTOList = new ArrayList<>();
+
+        for (Rango rango : rangesService.getRanges()) {
+            int quantity = listDEService.getPets().getRangeByPets(rango.getFrom(), rango.getTo());
+            kidsRangeDTOList.add(new RangeAgeDTO(rango, quantity));
+
+
+        }
+        return new ResponseEntity<>(new ResponseDTO(200, kidsRangeDTOList, null),
+                HttpStatus.OK);
+
+
+    }
+
 }
+
 
 
