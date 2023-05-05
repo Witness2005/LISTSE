@@ -58,7 +58,7 @@ public class ListDEController {
                     null), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDTO(
-                    200, "Se ha adicionado la mascota",
+                    200, "Se ha adicionado la mascota correctamente",
                     null), HttpStatus.OK);
         }
     }
