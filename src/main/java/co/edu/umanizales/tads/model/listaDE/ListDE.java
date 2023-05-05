@@ -5,10 +5,6 @@ import co.edu.umanizales.tads.model.Gender;
 import co.edu.umanizales.tads.model.Pet;
 import lombok.Data;
 
-
-import java.util.ArrayList;
-import java.util.List;
-
 @Data
 
 public class ListDE {
@@ -316,7 +312,7 @@ public class ListDE {
         }
     }
 
-    public int getRangeByPets (int min, int max) {
+    public int getRangeByAges(int min, int max) {
         Node temp = head;
         int counter = 0;
         while (temp !=  null) {

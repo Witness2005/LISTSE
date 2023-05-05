@@ -8,9 +8,12 @@ import co.edu.umanizales.tads.service.ListDEService;
 import co.edu.umanizales.tads.service.LocationService;
 import co.edu.umanizales.tads.model.Rango;
 import co.edu.umanizales.tads.service.RangeService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -35,7 +38,7 @@ public class ListDEController {
 
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> addPet(@RequestBody PetDTO petDTO) {
+    public ResponseEntity<ResponseDTO> addPet(@RequestBody @Valid  PetDTO petDTO) {
         Location location = locationService.getLocationByCode(petDTO.getCodeLocation());
 
         if (location == null) {
@@ -97,9 +100,17 @@ public class ListDEController {
 
     @GetMapping(path = "/delete/{age1}")
     public ResponseEntity<ResponseDTO> getTotalSalesByStore(@PathVariable byte age1) {
-        listDEService.getPets().deleteByAge(age1);
-        return new ResponseEntity<>(new ResponseDTO(200,
-                "Borrado satisfactoriamente", null), HttpStatus.OK);
+        try {
+            if (age1 < 1 || age1 > 127) {
+                throw new IllegalArgumentException("Este espacio solo acepta edades (1-127)");
+            }
+            listDEService.getPets().deleteByAge(age1);
+            return new ResponseEntity<>(new ResponseDTO(200,
+                    "Borrado satisfactoriamente", null), HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(new ResponseDTO(400, e.getMessage(), null),
+                    HttpStatus.BAD_REQUEST);
+        }
     }
 
 
@@ -130,37 +141,60 @@ public class ListDEController {
 
     @GetMapping(path = "/sendbottom/{firstChar}")
     public ResponseEntity<ResponseDTO> sendbottom(@PathVariable char firstChar) {
+        try {
+            if (listDEService.getPets().checkerByChar(Character.toUpperCase(firstChar)) == 0) {
+                return new ResponseEntity<>(
+                        new ResponseDTO(404, "no hay ninguno que empiece por esa letra", null),
+                        HttpStatus.OK);
+            } else {
+                listDEService.getPets().sendBottom(Character.toUpperCase(firstChar));
+                return new ResponseEntity<>(
+                        new ResponseDTO(200, "Cambio Realizado", null),
+                        HttpStatus.OK);
+            }
+        } catch (Exception e) {
 
-
-        if (listDEService.getPets().checkerByChar(Character.toUpperCase(firstChar)) == 0) {
             return new ResponseEntity<>(
-                    new ResponseDTO(404, "no hay ninguno que empiece por esa letra", null),
-                    HttpStatus.OK);
-        } else {
-            listDEService.getPets().sendBottom(Character.toUpperCase(firstChar));
-            return new ResponseEntity<>(
-                    new ResponseDTO(200, "Cambio Realizado", null),
-                    HttpStatus.OK);
-
-
+                    new ResponseDTO(500, "Se ha producido un error", null),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-
     }
 
     @GetMapping(path = "/advanceposition/{code}/{move}")
     public ResponseEntity<ResponseDTO> advancePosition(@PathVariable String code, @PathVariable int move) {
-        listDEService.getPets().advancePosition(code, move);
-        return new ResponseEntity<>(
-                new ResponseDTO(200, "Se movio la mascota ", null),
-                HttpStatus.OK);
+        try {
+            if (move < 0) {
+                return new ResponseEntity<>(
+                        new ResponseDTO(400, "El numero de objetos a avanzar no puede ser negativo", null),
+                        HttpStatus.BAD_REQUEST);
+            }
+            listDEService.getPets().advancePosition(code, move);
+            return new ResponseEntity<>(
+                    new ResponseDTO(200, "Se movió la mascota", null),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                    new ResponseDTO(500, "Se ha producido un error", null),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     @GetMapping(path = "/lose/{code}/{move}")
     public ResponseEntity<ResponseDTO> losePosition(@PathVariable String code, @PathVariable int move) {
-        listDEService.getPets().losePosition(code, move);
-        return new ResponseEntity<>(
-                new ResponseDTO(200, "Se retrocedio la mascota " , null),
-                HttpStatus.OK);
+        try {
+            if (move < 0) {
+                return new ResponseEntity<>(
+                        new ResponseDTO(400, "El valor para atrasar no puede ser negativo", null),
+                        HttpStatus.BAD_REQUEST);
+            }
+            listDEService.getPets().losePosition(code, move);
+            return new ResponseEntity<>(
+                    new ResponseDTO(200, "Se retrocedió la mascota", null),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                    new ResponseDTO(500, "Se ha producido un error", null),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping(path = "/rangeagepets")
@@ -168,7 +202,7 @@ public class ListDEController {
         List<RangeAgeDTO> kidsRangeDTOList = new ArrayList<>();
 
         for (Rango rango : rangesService.getRanges()) {
-            int quantity = listDEService.getPets().getRangeByPets(rango.getFrom(), rango.getTo());
+            int quantity = listDEService.getPets().getRangeByAges(rango.getFrom(), rango.getTo());
             kidsRangeDTOList.add(new RangeAgeDTO(rango, quantity));
 
 
@@ -178,6 +212,15 @@ public class ListDEController {
 
 
     }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ResponseDTO> handleValidationException(MethodArgumentNotValidException ex) {
+        List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
+        List<ErrorDTO> errors = new ArrayList<>();
+        for (FieldError fieldError : fieldErrors) {
+            errors.add(new ErrorDTO(HttpStatus.BAD_REQUEST.value(), fieldError.getDefaultMessage()));
+        }
+        return new ResponseEntity<>(new ResponseDTO(HttpStatus.BAD_REQUEST.value(), null, errors), HttpStatus.BAD_REQUEST);
+}
 
 }
 

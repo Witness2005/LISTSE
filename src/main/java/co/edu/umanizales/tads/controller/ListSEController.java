@@ -9,9 +9,12 @@ import co.edu.umanizales.tads.model.Rango;
 import co.edu.umanizales.tads.service.ListSEService;
 import co.edu.umanizales.tads.service.LocationService;
 import co.edu.umanizales.tads.service.RangeService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -44,7 +47,7 @@ public class ListSEController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> addKid(@RequestBody KidDTO kidDTO) {
+    public ResponseEntity<ResponseDTO> addKid(@RequestBody @Valid KidDTO kidDTO) {
         Location location = locationService.getLocationByCode(kidDTO.getCodeLocation());
 
         if (location == null) {
@@ -299,6 +302,16 @@ public class ListSEController {
                 HttpStatus.OK);
 
 
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ResponseDTO> handleValidationException(MethodArgumentNotValidException ex) {
+        List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
+        List<ErrorDTO> errors = new ArrayList<>();
+        for (FieldError fieldError : fieldErrors) {
+            errors.add(new ErrorDTO(HttpStatus.BAD_REQUEST.value(), fieldError.getDefaultMessage()));
+        }
+        return new ResponseEntity<>(new ResponseDTO(HttpStatus.BAD_REQUEST.value(), null, errors), HttpStatus.BAD_REQUEST);
     }
 
 

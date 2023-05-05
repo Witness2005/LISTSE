@@ -1,24 +1,25 @@
 package co.edu.umanizales.tads.controller.dto;
 
 import co.edu.umanizales.tads.model.Gender;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 @Data
 public class PetDTO {
 
-        @NotBlank(message = "La identificación no puede estar vaciá ")
+        @NotBlank(message = "No se puede dejar el espacio de identificacion vacio ")
         private String identification;
 
-        @NotBlank(message = "El nombre no puede estar vació")
-        @Size(min = 3, max = 30, message = "El nombre debe tener de 3 a 30 caracteres")
+        @NotBlank(message = "No se puede dejar el espacio del nombre vacio")
+        @Size(min = 3, max = 30, message = "minimo 3 y maximo 30 caracteres debe tener el nombre")
         private String name;
         @Min(value = 1, message = "La edad minima es 1")
         @Max(value = 15, message = "La edad debe ser menor o igual a 15")
         private byte age;
 
-        @Pattern(regexp = "[MF]", message = "El género debe ser M o F")
-        @Size(min = 1, max = 1, message = "El género debe ser solo una letra")
+
+
         private Gender gender;
-        @Size(min = 3, max = 8, message = "El código de la locación debe de tener 3 a 8 caracteres ")
+        @Size(min = 3, max = 8, message = "Solo son validos los codigos de 3 a 8 caracteres ")
         private String codeLocation;
     }
 
