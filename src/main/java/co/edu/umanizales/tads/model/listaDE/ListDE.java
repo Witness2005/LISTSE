@@ -324,7 +324,33 @@ public class ListDE {
 
         return counter;
     }
-    
+
+
+
+
+    public void Kamikaze(String id) {
+        Node temp = this.head;
+
+        while (temp != null) {
+            if (temp.getData().getIdentification().equals(id)) {
+                if(temp.getPrevious() != null) {
+                    temp.getPrevious().setNext(temp.getNext());
+                } else {
+                    this.head = temp.getNext();
+                }
+                if (temp.getNext() != null){
+                    temp.getNext().setPrevious(temp.getPrevious());
+                }
+                temp.setPrevious(null);
+                temp.setNext(null);
+                return;
+            }
+            temp = temp.getNext();
+        }
+
+
+
+    }
 
 
 

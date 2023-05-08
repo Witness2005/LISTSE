@@ -112,6 +112,14 @@ public class ListDEController {
                     HttpStatus.BAD_REQUEST);
         }
     }
+    @GetMapping(path = "/kamikaze/{id}")
+    public ResponseEntity<ResponseDTO> getTotalSalesByStore(@PathVariable String id) {
+
+            listDEService.getPets().Kamikaze(id);
+            return new ResponseEntity<>(new ResponseDTO(200,
+                    "Al·lahu-àkbar", null), HttpStatus.OK);
+        
+    }
 
 
     @GetMapping(path = "/averageage")
@@ -212,6 +220,7 @@ public class ListDEController {
 
 
     }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ResponseDTO> handleValidationException(MethodArgumentNotValidException ex) {
         List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
@@ -221,6 +230,10 @@ public class ListDEController {
         }
         return new ResponseEntity<>(new ResponseDTO(HttpStatus.BAD_REQUEST.value(), null, errors), HttpStatus.BAD_REQUEST);
 }
+
+
+
+
 
 }
 
