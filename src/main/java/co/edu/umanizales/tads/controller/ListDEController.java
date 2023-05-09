@@ -32,36 +32,30 @@ public class ListDEController {
 
     @GetMapping
     public ResponseEntity<ResponseDTO> getPets() {
+        List<Pet> pets = listDEService.getPets().toList();
         return new ResponseEntity<>(new ResponseDTO(
-                200, listDEService.getPets().getHead(), null), HttpStatus.OK);
+                200, pets, null), HttpStatus.OK);
     }
 
-
-    @PostMapping
-    public ResponseEntity<ResponseDTO> addPet(@RequestBody @Valid  PetDTO petDTO) {
+    @PostMapping (path = "/add")
+    public ResponseEntity<ResponseDTO> addKid(@RequestBody @Valid PetDTO petDTO){
         Location location = locationService.getLocationByCode(petDTO.getCodeLocation());
-
-        if (location == null) {
+        if(location == null){
             return new ResponseEntity<>(new ResponseDTO(
-                    404, "La ubicación no existe",
-                    null), HttpStatus.OK);
-        }
+                    404,"La ubicación no encontrada",
+                    null), HttpStatus.OK);}
 
-        Pet newPet = new Pet(petDTO.getIdentification(), petDTO.getName(),
-                petDTO.getAge(), petDTO.getGender(), location);
+            listDEService.getPets().add(
+                    new Pet(petDTO.getIdentification(),
+                            petDTO.getName(), petDTO.getAge(),
+                            petDTO.getGender(), location));
 
-        boolean found = listDEService.getPets().Checker(newPet);
+        return new ResponseEntity<>(new ResponseDTO(
+                200,"Se ha adicionado La mascotica",
+                null), HttpStatus.OK);
 
-        if (found) {
-            return new ResponseEntity<>(new ResponseDTO(
-                    200, "Mascota ya existe",
-                    null), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(new ResponseDTO(
-                    200, "Se ha adicionado la mascota correctamente",
-                    null), HttpStatus.OK);
-        }
-    }
+}
+
 
 
     @GetMapping(path = "/invert")
@@ -112,13 +106,10 @@ public class ListDEController {
                     HttpStatus.BAD_REQUEST);
         }
     }
-    @GetMapping(path = "/kamikaze/{id}")
-    public ResponseEntity<ResponseDTO> getTotalSalesByStore(@PathVariable String id) {
-
-            listDEService.getPets().Kamikaze(id);
-            return new ResponseEntity<>(new ResponseDTO(200,
-                    "Al·lahu-àkbar", null), HttpStatus.OK);
-        
+    @GetMapping("/kamikaze/{id}")
+    public ResponseEntity<ResponseDTO> kamikaze(@PathVariable String id) {
+        listDEService.getPets().Kamikaze(id);
+        return new ResponseEntity<>(new ResponseDTO(200, "Kamikaze successful", null), HttpStatus.OK);
     }
 
 

@@ -5,10 +5,15 @@ import co.edu.umanizales.tads.model.Gender;
 import co.edu.umanizales.tads.model.Pet;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 
 public class ListDE {
     private Node head;
+
+
     private int size;
 
 
@@ -16,14 +21,20 @@ public class ListDE {
 
 
     public void add(Pet pet) {
-        Node newPet = new Node(pet);
-        if (head != null) {
-            head.setPrevious(newPet);
+        if (head == null) {
+            head = new Node(pet);
+        } else {
+            Node newNode = new Node(pet);
+            Node temp = head;
+            while (temp.getNext() != null) {
+                temp = temp.getNext();
+            }
+            temp.setNext(newNode);
+            newNode.setPrevious(temp);
         }
-        newPet.setNext(head);
-        head = newPet;
-    }
 
+     size++;
+}
     public void addToStart(Pet pet) {
         if (head != null) {
             Node newNode = new Node(pet);
@@ -33,6 +44,17 @@ public class ListDE {
             head = new Node(pet);
         }
         size++;
+    }
+    public List<Pet> toList() {
+        List<Pet> pets = new ArrayList<>();
+        Node temp = head;
+
+        while (temp != null) {
+            pets.add(temp.getData());
+            temp = temp.getNext();
+        }
+
+        return pets;
     }
     public void addToEnd(Pet pet) {
         Node newNode = new Node(pet);
@@ -341,8 +363,7 @@ public class ListDE {
                 if (temp.getNext() != null){
                     temp.getNext().setPrevious(temp.getPrevious());
                 }
-                temp.setPrevious(null);
-                temp.setNext(null);
+
                 return;
             }
             temp = temp.getNext();
@@ -351,6 +372,7 @@ public class ListDE {
 
 
     }
+
 
 
 
