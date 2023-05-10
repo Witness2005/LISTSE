@@ -12,4 +12,6 @@ public class Pet
     private byte age;
     private Gender sex;
     private Location location;
+
+    private boolean bañado;
 }

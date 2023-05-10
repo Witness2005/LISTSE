@@ -368,6 +368,25 @@ public class ListDE {
             }
             temp = temp.getNext();
         }
+        /*
+        Creo un ayudante que recorra y verifique cada uno de los nodos
+Inicio un ciclo while que se ejecuta mientras en el quee stoy parado no sea null
+Dentro del ciclo, se verifica si el id del nodo actual es igual al id
+Si se encuentra el nodo con el id deseado,
+se verifica si el nodo tiene un nodo anterior (previous), en ese caso cambiaamos el brazo next del nodo anterior al siguiente nodo del nodo actual(Como pegar un salto).
+sino, se establece la cabeza de la lista en el siguiente nodo del nodo actual.
+Si el nodo actual tiene un nodo siguiente (next), cambiamos el brazo previous del siguiente nodo al nodo anterior del nodo actual.
+Si no se encuentra el nodo con el id buscado, se pasa al siguiente nodo de la lista.
+
+
+
+
+
+
+
+
+
+         */
 
 
 

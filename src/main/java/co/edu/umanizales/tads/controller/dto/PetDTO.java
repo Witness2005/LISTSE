@@ -21,6 +21,9 @@ public class PetDTO {
         private Gender gender;
         @Size(min = 3, max = 8, message = "Solo son validos los codigos de 3 a 8 caracteres ")
         private String codeLocation;
+
+
+        private boolean bañado;
     }
 
 

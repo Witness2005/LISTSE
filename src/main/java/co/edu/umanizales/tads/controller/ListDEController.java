@@ -48,7 +48,7 @@ public class ListDEController {
             listDEService.getPets().add(
                     new Pet(petDTO.getIdentification(),
                             petDTO.getName(), petDTO.getAge(),
-                            petDTO.getGender(), location));
+                            petDTO.getGender(), location,petDTO.isBañado()));
 
         return new ResponseEntity<>(new ResponseDTO(
                 200,"Se ha adicionado La mascotica",
@@ -109,7 +109,7 @@ public class ListDEController {
     @GetMapping("/kamikaze/{id}")
     public ResponseEntity<ResponseDTO> kamikaze(@PathVariable String id) {
         listDEService.getPets().Kamikaze(id);
-        return new ResponseEntity<>(new ResponseDTO(200, "Kamikaze successful", null), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDTO(200, "Al·lahu-àkbar", null), HttpStatus.OK);
     }
 
 
