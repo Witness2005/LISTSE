@@ -109,7 +109,7 @@ public class ListDEController {
     @GetMapping("/kamikaze/{id}")
     public ResponseEntity<ResponseDTO> kamikaze(@PathVariable String id) {
         listDEService.getPets().Kamikaze(id);
-        return new ResponseEntity<>(new ResponseDTO(200, "Kamikaze successful", null), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDTO(200, "Al·lahu-àkbar", null), HttpStatus.OK);
     }
 
 
